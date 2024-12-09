@@ -3,8 +3,8 @@
 
 | Student Information |                |
 |:-------------------:|----------------|
-|  Student Name       |   Name Here    |
-|  Student Email      |   Email Here   |
+|  Student Name       | Michael Thompson |
+|  Student Email      | mthompson17@sfsu.edu |
 
 
 ## Purpose of jar Folder 
@@ -16,9 +16,9 @@ The jar folder will store the built jar of your term project.
 
 # Required Information when Submitting Tank Game
 
-## Version of Java Used:
+## Version of Java Used: 21
 
-## IDE used: 
+## IDE used: IntelliJ
 
 ## Steps to Import project into IDE:
 
@@ -28,12 +28,12 @@ The jar folder will store the built jar of your term project.
 
 ## Controls to play your Game:
 
-|               | Player 1 | Player 2 |
-|---------------|----------|----------|
-|  Forward      |          |          |
-|  Backward     |          |          |
-|  Rotate left  |          |          |
-|  Rotate Right |          |          |
-|  Shoot        |          |          |
+|               | Player 1           |
+|---------------|--------------------|
+|  Left         |    A               |
+|  Right        |    D               | 
+|  Up           |    W               |
+|  Down         |    S               |
+|  Shoot        | Up/Down/Left/Right |
 
 <!-- You may add more controls if you need to. -->
