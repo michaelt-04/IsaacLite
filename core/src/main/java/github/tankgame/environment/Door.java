@@ -59,7 +59,7 @@ public class Door {
         }
 
         // fix door collision
-        this.bounds = new Rectangle(this.x, this.y, this.width + 20, this.height + 20);
+        this.bounds = new Rectangle(this.x, this.y - 10, this.width + 18, this.height);
     }
 
     public String oppositeOrientation(String orientation) {

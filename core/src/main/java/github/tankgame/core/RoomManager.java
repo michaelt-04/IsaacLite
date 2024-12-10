@@ -198,7 +198,7 @@ public class RoomManager {
         }
     }
 
-    private void setSpecialDoors(Room room, String specialType) {
+    public void setSpecialDoors(Room room, String specialType) {
         Array<Door> doors = room.getDoors();
         for (Door door : doors) {
             door.setSpecialType(specialType);

@@ -198,23 +198,56 @@ public class GameManager {
         if (correspondingDoor != null) {
             switch (correspondingDoor.getOrientation()) {
                 case "top":
-                    player.setPosition(correspondingDoor.getX(), correspondingDoor.getY() - player.getHeight() - 40);
+                    player.setPosition(player.getPositionX(), correspondingDoor.getY() - player.getHeight() - 30);
                     break;
                 case "bottom":
-                    player.setPosition(correspondingDoor.getX(), correspondingDoor.getY() + correspondingDoor.getHeight() + 40);
+                    player.setPosition(player.getPositionX(), correspondingDoor.getY() + correspondingDoor.getHeight() + 30);
                     break;
                 case "left":
-                    player.setPosition(correspondingDoor.getX() + correspondingDoor.getWidth() + 100, correspondingDoor.getY());
+                    player.setPosition(correspondingDoor.getX() + correspondingDoor.getWidth() + 30, player.getPositionY());
                     break;
                 case "right":
-                    player.setPosition(correspondingDoor.getX() - player.getWidth() - 40, correspondingDoor.getY());
+                    player.setPosition(correspondingDoor.getX() - player.getWidth() - 25, player.getPositionY());
                     break;
                 default:
                     System.err.println("Unexpected door orientation: " + correspondingDoor.getOrientation());
                     break;
             }
         }else{
-            player.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 4);
+
+            //System.out.println("NEW DOOR ADDED BC THERE WASNT A CORRESPONDING DOORs");
+
+            // for testing
+            for(int i = newRoom.getDoors().size-1; i >= 0; i--) {
+                newRoom.getDoors().removeIndex(0);
+            }
+            Door newRoomDoor = new Door(currentRoom, door.oppositeOrientation(door.getOrientation()), prevPath);
+            newRoom.addDoor(newRoomDoor);
+
+            roomManager.setSpecialDoors(newRoom, "item");
+
+            switch (newRoomDoor.getOrientation()) {
+                case "top":
+                    player.setPosition(player.getPositionX(), newRoomDoor.getY() - player.getHeight() - 30);
+                    break;
+                case "bottom":
+                    player.setPosition(player.getPositionX(), newRoomDoor.getY() + newRoomDoor.getHeight() + 30);
+                    break;
+                case "left":
+                    player.setPosition(newRoomDoor.getX() + newRoomDoor.getWidth() - 25, player.getPositionY());
+                    break;
+                case "right":
+                    player.setPosition(newRoomDoor.getX() - player.getWidth() - 25, player.getPositionY());
+                    break;
+                default:
+                    System.err.println("Unexpected door orientation: " + newRoomDoor.getOrientation());
+                    break;
+            }
+
+            if(newRoomDoor == null){
+                player.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 4);
+            }
+
         }
 
 

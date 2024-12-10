@@ -63,7 +63,7 @@ public abstract class Character {
 
     public void takeDamage(float damage) {
         this.health -= damage;
-        System.out.println(this.health);
+        //System.out.println(this.health);
         if (this.health <= 0) {
             this.health = 0;
             this.isDead = true;

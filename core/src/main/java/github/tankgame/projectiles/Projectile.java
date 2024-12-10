@@ -79,6 +79,7 @@ public class Projectile {
             this.positionY += directionY * speed * delta;
         } else if (this.state == State.COLLIDING) {
             this.collisionTimeElapsed += delta;
+            this.damage = 0;
 
             if (collisionAnimation.isAnimationFinished(this.collisionTimeElapsed)) {
                 this.isCollided = true; // Mark projectile for removal
@@ -94,6 +95,10 @@ public class Projectile {
                 this.damage = 0;
             }
         }
+    }
+
+    public String getState(){
+        return this.state.toString();
     }
 
     public float getDamage(){

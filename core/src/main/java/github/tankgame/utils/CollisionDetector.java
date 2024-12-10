@@ -8,6 +8,8 @@ import github.tankgame.environment.Room;
 import github.tankgame.environment.blocks.Wall;
 import github.tankgame.projectiles.Projectile;
 
+import java.util.Objects;
+
 public class CollisionDetector {
     private Room room;
 
@@ -77,6 +79,11 @@ public class CollisionDetector {
             projectile.getProjHeight()
         );
 
+        if(Objects.equals(projectile.getState(), "COLLIDING")){
+            projectileBounds.set(0,0,0,0);
+        }
+
+
         // Check for collisions with tiles or rocks
         return checkTileCollision(projectileBounds);
     }
@@ -98,6 +105,10 @@ public class CollisionDetector {
             projectile.getProjWidth(),
             projectile.getProjHeight()
         );
+
+        if(Objects.equals(projectile.getState(), "COLLIDING")){
+            projectileBounds.set(0,0,0,0);
+        }
 
         return character.getBounds().overlaps(projectileBounds);
     }
