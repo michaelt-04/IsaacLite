@@ -1,7 +1,6 @@
 package github.tankgame.core;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import github.tankgame.characters.Monster;
 import github.tankgame.characters.Player;
@@ -11,9 +10,6 @@ import github.tankgame.items.Bomb;
 import github.tankgame.projectiles.Projectile;
 import github.tankgame.utils.CollisionDetector;
 import github.tankgame.utils.InputHandler;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 // Manages game state, transitions, and score
 public class GameManager {
@@ -108,7 +104,6 @@ public class GameManager {
                 } else if (collisionDetector.checkCharCollisionWithProj(monster, projectile)) {
                     // Handle collision between monster and projectile
                     monster.takeDamage(projectile.getDamage());
-                    //System.out.println(monster.getHealth());
                     projectile.onCollision();
                 }
             }
@@ -134,7 +129,6 @@ public class GameManager {
                 } else if (collisionDetector.checkCharCollisionWithProj(currentRoom.getBoss(), projectile)) {
                     // Handle collision between monster and projectile
                     currentRoom.getBoss().takeDamage(projectile.getDamage());
-                    //System.out.println(monster.getHealth());
                     projectile.onCollision();
                 }
             }
@@ -171,13 +165,11 @@ public class GameManager {
 
     private Room transitionToRoom(String roomPath, String enteringDoorOrientation, String prevPath, Door door) {
 
-        System.out.println("Previous Room: " + prevPath);
 
         Room newRoom = null;
         for (Room r : allRooms) {
             if (r.getTexturePath().equals(roomPath)) {
                 newRoom = r;
-                System.out.println("new Room: " + newRoom.getTexturePath());
                 break;
             }
         }
@@ -215,9 +207,6 @@ public class GameManager {
             }
         }else{
 
-            //System.out.println("NEW DOOR ADDED BC THERE WASNT A CORRESPONDING DOORs");
-
-            // for testing
             for(int i = newRoom.getDoors().size-1; i >= 0; i--) {
                 newRoom.getDoors().removeIndex(0);
             }

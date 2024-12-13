@@ -72,13 +72,13 @@ public class MapGenerator {
 
         // Retry map generation if not all rooms are connected or if there aren't enough rooms
         if (!allRoomsConnected() || countRooms() < numRooms) {
-            System.out.println("Retrying map generation...");
+            //System.out.println("Retrying map generation...");
             roomGrid = new boolean[WIDTH * HEIGHT];
             roomQueue.clear();
             deadEnds.clear();
             generateMap();
         } else {
-            System.out.println("Map generated successfully with " + countRooms() + " rooms.");
+            //System.out.println("Map generated successfully with " + countRooms() + " rooms.");
             calculateDeadEnds();
             placeSpecialRooms();
         }
@@ -117,10 +117,9 @@ public class MapGenerator {
         boolean bossRoomPlaced = false;
         while (!bossRoomPlaced && !deadEnds.isEmpty()) {
             int bossRoom = deadEnds.remove(deadEnds.size() - 1); // Get the last dead-end room
-            if (bossRoom != START_ROOM) { // Ensure the boss room is not the start room
+            if (bossRoom != START_ROOM-1) { // Ensure the boss room is not the start room
                 bossRooms[bossRoom] = true;
                 roomGrid[bossRoom] = true;
-                System.out.println("Boss room location: " + bossRoom);
                 bossRoomPlaced = true; // Mark as successfully placed
             }
         }
@@ -139,7 +138,7 @@ public class MapGenerator {
             }
         }
 
-        int itemRoomsToPlace = 1; // Adjust how many item rooms to place
+        int itemRoomsToPlace = 1; // how many item rooms to place
         int itemRoomsPlaced = 0;
 
         while (!validItemRoomCells.isEmpty() && itemRoomsPlaced < itemRoomsToPlace) {
@@ -150,7 +149,6 @@ public class MapGenerator {
                 roomGrid[itemRoomCell] = true;
                 itemRoomsPlaced++;
             }
-            System.out.println("Item room location: " + itemRoomCell);
         }
     }
 

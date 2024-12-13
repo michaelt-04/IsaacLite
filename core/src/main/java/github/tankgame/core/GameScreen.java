@@ -4,12 +4,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import github.tankgame.characters.Monster;
 import github.tankgame.characters.Player;
 import github.tankgame.environment.MapGenerator;
@@ -18,7 +15,7 @@ import github.tankgame.screens.EndScreen;
 import github.tankgame.screens.PauseScreen;
 import github.tankgame.screens.StartScreen;
 import github.tankgame.utils.CollisionDetector;
-import github.tankgame.environment.Room; // Import the Room class
+import github.tankgame.environment.Room;
 
 
 // The main gameplay screen that updates and renders game elements
@@ -27,21 +24,25 @@ public class GameScreen extends ApplicationAdapter {
     private Music introBackgroundMusic;
     private boolean isIntroCompleted; // To check if intro music is finished
     private Music backgroundMusic; // Declare Music variable
+    private Music bossMusic;
+    private Music bossOutroMusic;
+    private Music deathMusicIntro, deathMusic;
+    private int endCount = 0;
     private StartScreen startScreen;
     private boolean isGameStarted;
     private PauseScreen pauseScreen;
-    private DeathScreen deathScreen; // Add reference to EndScreen
+    private DeathScreen deathScreen;
     private EndScreen endScreen;
     private SpriteBatch batch;
     private Player player;
     private CollisionDetector collisionDetector;
-    private Room room; // Room instance
+    private Room room;
     private GameManager gameManager;
     private RoomManager roomManager;
     private HudManager hudManager;
 
     // Add monsters to the game
-    private Array<Monster> monsters; // Your array of monsters
+    private Array<Monster> monsters;
 
 
     @Override
@@ -72,20 +73,45 @@ public class GameScreen extends ApplicationAdapter {
         titleMusic = Gdx.audio.newMusic(Gdx.files.internal("music/title_screen.ogg"));
         introBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/intro_background_music.ogg"));
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/background_music.ogg"));
+        bossMusic = Gdx.audio.newMusic(Gdx.files.internal("music/boss_fight.ogg"));
+        bossOutroMusic = Gdx.audio.newMusic(Gdx.files.internal("music/boss_outro.ogg"));
+        deathMusicIntro = Gdx.audio.newMusic(Gdx.files.internal("music/isaac_died.ogg"));
+        deathMusic = Gdx.audio.newMusic(Gdx.files.internal("music/died.ogg"));
 
         // Play title music on the start screen
         titleMusic.setLooping(true);
+        titleMusic.setVolume(0.2f);
         titleMusic.play();
 
         // Optionally, set background music volume
-        backgroundMusic.setVolume(0.5f); // Main music volume
-        introBackgroundMusic.setVolume(0.5f); // Intro music volume
+        backgroundMusic.setVolume(0.2f); // Main music volume
+        introBackgroundMusic.setVolume(0.2f); // Intro music volume
+        deathMusic.setVolume(0.2f);
+        deathMusic.setVolume(0.2f);
     }
 
     // Manual reset method (instead of calling create)
     public void restartGame() {
         // Reinitialize player and other entities
         player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        player.setDefaultStats();
+
+        if (backgroundMusic.isPlaying() || introBackgroundMusic.isPlaying()) {
+            introBackgroundMusic.stop();
+            backgroundMusic.stop();
+            introBackgroundMusic.play();
+            introBackgroundMusic.setLooping(false);
+        }
+
+        if (deathMusicIntro.isPlaying() || deathMusic.isPlaying()) {
+            deathMusicIntro.stop();
+            deathMusic.stop();
+        }
+
+        if(bossMusic.isPlaying() || bossOutroMusic.isPlaying()) {
+            bossMusic.stop();
+            bossOutroMusic.stop();
+        }
 
         // Reset game managers
         MapGenerator mapGenerator = new MapGenerator();
@@ -108,18 +134,25 @@ public class GameScreen extends ApplicationAdapter {
                 titleMusic.stop();
                 introBackgroundMusic.play(); // Play intro music
                 introBackgroundMusic.setLooping(false); // No looping for intro music
-                introBackgroundMusic.setOnCompletionListener(new Music.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(Music music) {
-                        // When intro music finishes, start the main background music
-                        backgroundMusic.play();
-                        backgroundMusic.setLooping(true); // Loop the main background music
-                    }
-                });
+
             } else if (startScreen.isExitKeyPressed()) {
                 Gdx.app.exit();
             }
         } else if (deathScreen.isEndActive()) {
+
+            // Ensure the background music is stopped
+            if (backgroundMusic.isPlaying() || introBackgroundMusic.isPlaying()) {
+                introBackgroundMusic.stop();
+                backgroundMusic.stop();
+            }
+
+            // Handle death intro music and death music
+            if (!deathMusic.isPlaying()) {
+                deathMusicIntro.play();
+                deathMusic.play();
+                deathMusic.setLooping(true);
+            }
+
             // When the game ends, render the game elements and then the end screen
             batch.begin();
             room.render(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 960, 640, 1);
@@ -139,6 +172,14 @@ public class GameScreen extends ApplicationAdapter {
             player.renderProjectiles(batch);
             batch.end();
 
+            if (endCount == 0) {
+                bossMusic.stop();
+                bossOutroMusic.play();
+                bossMusic.setLooping(false);
+                bossOutroMusic.setVolume(0.2f);
+                endCount++;
+            }
+
             // Render the end screen on top
             endScreen.render();
         } else if (pauseScreen.isPauseActive()) {
@@ -153,6 +194,19 @@ public class GameScreen extends ApplicationAdapter {
             // Render the pause screen on top
             pauseScreen.render(batch);
         } else {
+
+            if (!introBackgroundMusic.isPlaying() && !backgroundMusic.isPlaying()) {
+                backgroundMusic.play();
+                backgroundMusic.setLooping(true);
+            }
+
+            if (room.isBossRoom()) {
+                backgroundMusic.stop();
+                bossMusic.setVolume(0.2f);
+                bossMusic.play();
+                bossMusic.setLooping(true);
+            }
+
             // Handle the escape key to toggle the pause state
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 pauseScreen.togglePause(); // Toggle pause when Escape is pressed
@@ -199,7 +253,7 @@ public class GameScreen extends ApplicationAdapter {
                 deathScreen.setEndActive(true); // Show end screen when player is dead
             }
 
-            if(room.isBossRoom() && room.getBoss() == null) {
+            if (room.isBossRoom() && room.getBoss() == null) {
                 endScreen.setEndActive(true);
             }
 

@@ -22,9 +22,7 @@ public class Rock {
         this.texture = new Texture("rooms/blocks/rock1.png");
 
 
-        // adjust rock size
         this.bounds = new Rectangle(x, y, width, height);
-        //System.out.println(this.bounds);
     }
 
     public void render(SpriteBatch batch) {
@@ -37,7 +35,6 @@ public class Rock {
         if (!isDestroyed) {
             isDestroyed = true;
             isSolid = false;
-            //Play a sound effect
 
             bounds.set(0, 0, 0, 0);
         }

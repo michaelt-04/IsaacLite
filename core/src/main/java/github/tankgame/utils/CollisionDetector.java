@@ -1,6 +1,5 @@
 package github.tankgame.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import github.tankgame.characters.Character;
 import github.tankgame.environment.blocks.Rock;
@@ -21,7 +20,6 @@ public class CollisionDetector {
     public boolean checkTileCollision(Rectangle bounds) {
         for (Rectangle solidTile : room.getSolidTiles()) {
             if (solidTile.overlaps(bounds)) {
-                //System.out.println("solidTile: " + solidTile);
                 return true; // Collision with tile
             }
         }
@@ -51,7 +49,6 @@ public class CollisionDetector {
 
         // Create a temporary bounds rectangle for the character
         Rectangle futureBoundsX = new Rectangle(newX, character.getPositionY(), character.getHitBoxWidth(), character.getHitBoxHeight());
-        //System.out.println("futureBoundsX: " + futureBoundsX);
         Rectangle futureBoundsY = new Rectangle(character.getPositionX(), newY, character.getHitBoxWidth(), character.getHitBoxHeight());
 
         // Check for X-axis collisions

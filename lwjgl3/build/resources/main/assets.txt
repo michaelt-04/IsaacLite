@@ -33,12 +33,12 @@ items/items/collectibles_193_meat.png
 items/pills/pickup_007_pill.png
 minimap/minimap1.png
 music/background_music.ogg
-music/basic boss fight.ogg
-music/boss fight jingle outro v2_12.ogg
+music/boss_fight.ogg
+music/boss_outro.ogg
+music/died.ogg
 music/intro_background_music.ogg
-music/isaac died_02.ogg
+music/isaac_died.ogg
 music/title_screen.ogg
-music/you died.ogg
 projectiles/Thumbs.db
 projectiles/bulletatlas.png
 projectiles/monster_death_sheet.png
@@ -65,7 +65,6 @@ rooms/maps/room_17_map.csv
 rooms/maps/room_18_map.csv
 rooms/maps/room_19_map.csv
 rooms/maps/room_1_map.csv
-rooms/maps/room_20_map.csv
 rooms/maps/room_2_map.csv
 rooms/maps/room_3_map.csv
 rooms/maps/room_4_map.csv
@@ -96,6 +95,15 @@ rooms/room_7.png
 rooms/room_8.png
 rooms/room_9.png
 rooms/start_room.png
-sounds/goo death 0.wav
-sounds/meaty deaths 1.wav
-sounds/meaty deaths 2.wav
+sounds/explosion.wav
+sounds/healthup.wav
+sounds/horfdeath.wav
+sounds/isaachurt.wav
+sounds/isaachurt2.wav
+sounds/isaachurt3.wav
+sounds/meat jumps 2.wav
+sounds/meatydeath1.wav
+sounds/meatydeath2.wav
+sounds/speedup.wav
+sounds/tear.wav
+sounds/tearsup.wav

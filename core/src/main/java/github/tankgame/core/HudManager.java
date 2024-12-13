@@ -34,12 +34,12 @@ public class HudManager {
         oneTexture = new TextureRegion(fontTexture, 104, 45, 7, 12);
         twoTexture = new TextureRegion(fontTexture, 95, 23, 8, 12);
         threeTexture = new TextureRegion(fontTexture, 103, 23, 8, 12);
-        fourTexture = new TextureRegion(fontTexture, 112, 23, 8, 12); // Example position
-        fiveTexture = new TextureRegion(fontTexture, 119, 23, 8, 12); // Example position
-        sixTexture = new TextureRegion(fontTexture, 127, 23, 8, 12); // Example position
-        sevenTexture = new TextureRegion(fontTexture, 135, 23, 8, 12); // Example position
-        eightTexture = new TextureRegion(fontTexture, 143, 23, 8, 12); // Example position
-        nineTexture = new TextureRegion(fontTexture, 151, 34, 8, 12); // Example position
+        fourTexture = new TextureRegion(fontTexture, 112, 23, 8, 12);
+        fiveTexture = new TextureRegion(fontTexture, 119, 23, 8, 12);
+        sixTexture = new TextureRegion(fontTexture, 127, 23, 8, 12);
+        sevenTexture = new TextureRegion(fontTexture, 135, 23, 8, 12);
+        eightTexture = new TextureRegion(fontTexture, 143, 23, 8, 12);
+        nineTexture = new TextureRegion(fontTexture, 151, 34, 8, 12);
     }
 
     public void render(Batch batch, Player player) {
@@ -54,7 +54,7 @@ public class HudManager {
 
     private void renderHearts(Batch batch) {
         float playerHealth = player.getHealth();
-        int maxHealth = (int) player.getMaxHealth(); // Maximum health, replace with your actual value
+        int maxHealth = (int) player.getMaxHealth();
 
         int heartsToDisplay = (int) Math.ceil(maxHealth / 2.0); // Number of heart slots
 
@@ -119,7 +119,7 @@ public class HudManager {
             case 7: return sevenTexture;
             case 8: return eightTexture;
             case 9: return nineTexture;
-            default: return zeroTexture; // Fallback
+            default: return zeroTexture;
         }
     }
 

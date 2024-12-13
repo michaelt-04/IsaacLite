@@ -63,7 +63,6 @@ public abstract class Character {
 
     public void takeDamage(float damage) {
         this.health -= damage;
-        //System.out.println(this.health);
         if (this.health <= 0) {
             this.health = 0;
             this.isDead = true;
@@ -122,17 +121,12 @@ public abstract class Character {
     }
 
     public void increaseHealth(float value) {
-        System.out.println("Health increased by: " + value);
-
         this.maxHealth += value;
         this.health += value;
-        System.out.println(this.health + "/" + this.maxHealth);
     }
 
     public void increaseSpeed(float value) {
-        System.out.println("Speed increased by: " + value*33);
         this.speed += value*33;
-        System.out.println(this.speed);
     }
 
     public void increaseTears(float value){}
@@ -140,14 +134,6 @@ public abstract class Character {
     public void increaseDamage(float value) {}
 
     public void increaseBombs(float value) {}
-
-    public void setHealth(float health) {
-        this.health = health;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
 
     public float getSpeed() {
         return this.speed;

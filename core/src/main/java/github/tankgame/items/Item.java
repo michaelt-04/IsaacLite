@@ -29,7 +29,7 @@ public class Item extends PowerUp {
                 this.appearance = new Texture(Gdx.files.internal("characters/player/costumes/theinnereye_costume.png"));
                 this.icon = new Texture(Gdx.files.internal("items/items/collectibles_002_theinnereye.png"));
             default:
-                System.out.println("Unknown stat: " + stats[0]);
+                System.out.println("Unknown item stat: " + stats[0]);
         }
     }
 
@@ -65,7 +65,6 @@ public class Item extends PowerUp {
 
     @Override
     public void render(SpriteBatch batch) {
-        //System.out.println("x: " + x + " y: " + y);
         batch.draw(icon, x - 12, y, 40, 40);
     }
 

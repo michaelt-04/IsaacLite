@@ -1,13 +1,10 @@
 package github.tankgame.environment;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
 import github.tankgame.characters.Character;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.graphics.g2d.Animation;
 
 import java.util.Objects;
 
@@ -28,38 +25,37 @@ public class Door {
     private Rectangle bounds;
 
     public Door(Room room, String orientation, String targetRoomPath) {
-        //this.room = currentRoom;
         this.orientation = orientation;
         this.targetRoomPath = targetRoomPath;
 
-        //loadSprites();
         this.linkedRoom = room;
 
-        int wallThickness = 40*2;
-        int doorOffset = 8*2; // Adjust
+        int wallThickness = 80;
+        int doorOffset = 16;
 
         // Set door position based on orientation
         switch (orientation) {
             case "top":
                 this.x = (room.getRoomWidth() - width*4) / 2;
                 this.y = room.getRoomHeight() - wallThickness - doorOffset*2;
+                this.bounds = new Rectangle(this.x, this.y - 10, this.width + 18, this.height);
                 break;
             case "bottom":
                 this.x = (room.getRoomWidth() + width) / 2;
                 this.y = wallThickness + (height/4);
+                this.bounds = new Rectangle(this.x - 10, this.y - 10, this.width + 18, this.height);
                 break;
             case "left":
                 this.x = wallThickness + (doorOffset/5);
-                this.y = (room.getRoomHeight() - height*3) / 2;
+                this.y = ((room.getRoomHeight() - height*3) / 2);
+                this.bounds = new Rectangle(this.x, this.y, this.width + 18, this.height);
                 break;
             case "right":
                 this.x = room.getRoomWidth() - wallThickness - width - doorOffset/2;
                 this.y = (room.getRoomHeight() + height) / 2;
+                this.bounds = new Rectangle(this.x, this.y - 15, this.width + 18, this.height);
                 break;
         }
-
-        // fix door collision
-        this.bounds = new Rectangle(this.x, this.y - 10, this.width + 18, this.height);
     }
 
     public String oppositeOrientation(String orientation) {
@@ -112,8 +108,8 @@ public class Door {
             this.y - (height/2f),
             originX,
             originY,
-            65*2,
-            50*2,
+            130,
+            100,
             1,
             1,
             rotation
@@ -157,8 +153,8 @@ public class Door {
                 this.y - (height/2f) + leftOffsetY,
                 originX,
                 originY,
-                65*2,
-                50*2,
+                130,
+                100,
                 1,
                 1,
                 rotation
@@ -169,8 +165,8 @@ public class Door {
                 this.y - (height/2f) + rightOffsetY,
                 originX,
                 originY,
-                65*2,
-                50*2,
+                130,
+                100,
                 1,
                 1,
                 rotation
@@ -184,8 +180,8 @@ public class Door {
             this.y - (height/2f),
             originX,
             originY,
-            65*2,
-            50*2,
+            130,
+            100,
             1,
             1,
             rotation
@@ -243,24 +239,12 @@ public class Door {
         this.locked = locked;
     }
 
-    public boolean isLocked() {
-        return this.locked;
-    }
-
     public boolean isPlayerColliding(Character player) {
         if (locked) {
             return false; // Ignore collisions if the door is locked
         }
         // Check if the player's bounds overlap with the door's bounds
         return bounds.overlaps(player.getBounds());
-    }
-
-    public void setLinkedDoor(Door linkedDoor) {
-        this.linkedDoor = linkedDoor;
-    }
-
-    public Door getLinkedDoor() {
-        return linkedDoor;
     }
 
     public String getTargetRoomPath() {

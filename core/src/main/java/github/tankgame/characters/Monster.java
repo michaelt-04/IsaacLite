@@ -3,15 +3,10 @@ package github.tankgame.characters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import github.tankgame.projectiles.Projectile;
-import github.tankgame.utils.CollisionDetector;
-
-import java.util.Iterator;
-import java.util.Objects;
 
 // Extends character, contains monster-specific methods
 public abstract class Monster extends Character {
@@ -56,6 +51,9 @@ public abstract class Monster extends Character {
 
     public boolean isDeathAnimationFinished() {
         return this.deathAnim.isAnimationFinished(deathTime);
+    }
+
+    public void playDeathSound(){
     }
 
     public float getDamage() {

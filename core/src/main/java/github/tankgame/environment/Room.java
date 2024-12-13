@@ -119,7 +119,6 @@ public class Room {
     public void checkItemPickup(Character character) {
         if (item != null && item.isPickedUp(character)) {
             item.applyEffect(character); // Apply the effect of the item to the character
-            System.out.println("Item picked up! Applied effect: " + item.getStats().toString());
             item.dispose(); // Dispose of the item after use
             item = null;
         }
@@ -190,12 +189,10 @@ public class Room {
         }
 
         if (pill != null) {
-            //System.out.println("pill spawned");
             pill.render(batch);
         }
 
         if (item != null && isItemRoom) {
-            //System.out.println("item spawned");
             item.render(batch);
         }
 
@@ -218,7 +215,6 @@ public class Room {
         if (boss != null) {
             boss.dispose();
             boss = null;    // Remove the boss from the room
-            System.out.println("Boss has been removed from the room.");
         }
     }
 
@@ -260,7 +256,7 @@ public class Room {
 
 
 
-                    if (!isItemRoom) {
+                    if (!isItemRoom && !isBossRoom) {
 
                         if (value == 2) {
                             monsters.add(new Horf(col * tileWidth, row * tileHeight));
@@ -310,7 +306,6 @@ public class Room {
 
         // If no monsters are left and a pill hasn't been spawned yet, spawn a pill
         if (monsters.size == 0 && !pillSpawned) {
-            //System.out.println("PILL SPAWNED");
             spawnPill();
         }
     }
@@ -352,8 +347,8 @@ public class Room {
 
     public void checkPillPickup(Character character) {
         if (pill != null && pill.isPickedUp(character)) {
+            pill.playPillSound();
             pill.applyEffect(character);
-            System.out.println("Pill picked up! Applied effect: " + pill.getStat());
             pill.dispose();
             pill = null; // Remove the pill after pickup
         }
@@ -379,20 +374,12 @@ public class Room {
         return this.isBossRoom;
     }
 
-    public boolean[][] getCollisionMap() {
-        return this.collisionMap;
-    }
-
     public String getTexturePath() {
         return this.texturePath;
     }
 
     public Texture getRoomTexture() {
         return this.roomTexture;
-    }
-
-    public void setTexturePath(String texturePath) {
-        this.texturePath = texturePath;
     }
 
     public int getRoomIndex() {
@@ -405,14 +392,6 @@ public class Room {
 
     public float getRoomHeight() {
         return this.roomHeight;
-    }
-
-    public float getTileWidth() {
-        return tileWidth;
-    }
-
-    public float getTileHeight() {
-        return tileHeight;
     }
 
     public void dispose() {

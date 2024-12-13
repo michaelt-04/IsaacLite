@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import github.tankgame.characters.Monster;
 
+// Base class for bosses with shared properties
 public class Boss extends Monster {
 
     // Boss-specific properties
@@ -22,7 +23,7 @@ public class Boss extends Monster {
         super(x, y, width, height);
 
         // Set up health values
-        this.maxHealth = 40;
+        this.maxHealth = 55;
         this.health = maxHealth;
 
         // Load boss texture and animations

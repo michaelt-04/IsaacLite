@@ -2,11 +2,11 @@ package github.tankgame.characters.boss;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Random;
 
+// Extends Boss, manages chub-specific actions and stats
 public class Chub extends Boss {
     private Texture chubTexture;
     private TextureRegion idleHeadRegion, idleHeadUpRegion;

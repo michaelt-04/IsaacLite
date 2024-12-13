@@ -1,6 +1,7 @@
 package github.tankgame.characters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,9 +10,10 @@ import com.badlogic.gdx.utils.Array;
 import github.tankgame.environment.blocks.Rock;
 import github.tankgame.items.Bomb;
 import github.tankgame.projectiles.Projectile;
-import github.tankgame.utils.CollisionDetector;
 
 import java.util.Objects;
+
+import static com.badlogic.gdx.math.MathUtils.random;
 
 // Extends Character, manages player-specific actions and stats
 public class Player extends Character {
@@ -34,12 +36,13 @@ public class Player extends Character {
     private float deathTime;
     private float invulnerableTimer = 0;
     private static final float INVULNERABLE_TIMER = 1f;
+    private Sound hurtSound, hurtSound2, hurtSound3;
 
-    private static float shoot_interval = 0.3f;
+    private float shootInterval = 0.3f;
     private float shootingStateTimer;
     private float shootDirectionTimer;
-    private static float shooting_state_duration = 0.2f;
-    private static float post_shoot_direction_duration = 0.4f;
+    private float shootStateDuration = 0.2f;
+    private float postShootDirectionDuration = 0.4f;
 
     private Array<Bomb> bombs;
     private int maxBombs; // Maximum bombs the player can carry
@@ -48,7 +51,6 @@ public class Player extends Character {
 
     public Player(float positionX, float positionY) {
         super(positionX, positionY, 64, 64);
-        System.out.println("Player hitbox: " + this.bounds);
         this.speed = 135 * 2;
         this.health = 6;
         this.maxHealth = health;
@@ -62,12 +64,24 @@ public class Player extends Character {
         shootCooldown = 0;
 
         texture = new Texture(Gdx.files.internal("characters/player/isaac_sprite_sheet.png"));
+        this.hurtSound = Gdx.audio.newSound(Gdx.files.internal("sounds/isaachurt.wav"));
+        this.hurtSound2 = Gdx.audio.newSound(Gdx.files.internal("sounds/isaachurt2.wav"));
+        this.hurtSound3 = Gdx.audio.newSound(Gdx.files.internal("sounds/isaachurt3.wav"));
         this.hasCostume = false;
         loadSprites();
 
         // Initial direction (facing down)
         currentHead = headDown;
         currentBody = bodyDownAnim.getKeyFrame(0);  // Standing down
+    }
+
+    public void setDefaultStats(){
+        this.speed = 270;
+        this.health = 6;
+        this.damage = 1.0F;
+        this.currentBombs = 3;
+        this.shootInterval = 0.3f;
+        this.postShootDirectionDuration = 0.4f;
     }
 
     public void update(float delta, Array<Rock> rocks) {
@@ -77,7 +91,6 @@ public class Player extends Character {
             bomb.update(delta, rocks);
 
             if (bomb.hasExploded()) {
-                System.out.println("BOMB DISPOSED");
                 bombs.removeIndex(i); // Remove bomb after explosion
             }
         }
@@ -141,11 +154,10 @@ public class Player extends Character {
     @Override
     public void move(float delta, float newX, float newY, float deltaX, float deltaY) {
         super.move(delta, newX, newY, deltaX, deltaY);
-        //System.out.println(this.health);
 
-        if (shootingStateTimer > 0) {
+        if (this.shootingStateTimer > 0) {
             // Decrement the timer
-            shootingStateTimer -= Gdx.graphics.getDeltaTime();
+            this.shootingStateTimer -= Gdx.graphics.getDeltaTime();
         } else {
             // Update direction and animation frame based on movement direction
             if (isMoving) {
@@ -172,7 +184,7 @@ public class Player extends Character {
 
     @Override
     public void shoot(float deltaX, float deltaY) {
-        if (shootCooldown <= 0 && (deltaX != 0 || deltaY != 0)) {
+        if (this.shootCooldown <= 0 && (deltaX != 0 || deltaY != 0)) {
             // Primary projectile
             projectiles.add(new Projectile(
                 positionX - 18,
@@ -219,7 +231,7 @@ public class Player extends Character {
             }
 
             // Set cooldown and update head sprite
-            shootCooldown = shoot_interval;
+            this.shootCooldown = shootInterval;
             if (deltaX == 1) {
                 currentHead = shootRight;
             } else if (deltaX == -1) {
@@ -231,8 +243,8 @@ public class Player extends Character {
             }
 
             // Start shooting animation
-            shootingStateTimer = shooting_state_duration;
-            shootDirectionTimer = post_shoot_direction_duration;
+            this.shootingStateTimer = this.shootStateDuration;
+            this.shootDirectionTimer = this.postShootDirectionDuration;
         }
     }
 
@@ -240,6 +252,21 @@ public class Player extends Character {
     public void takeDamage(float damage) {
         if (this.invulnerableTimer <= 0) { // Only take damage if not invulnerable
             super.takeDamage(damage);
+
+            int rand = random.nextInt(3);
+
+            switch (rand) {
+                case 0:
+                    this.hurtSound.play(0.6f);
+                    break;
+                case 1:
+                    this.hurtSound2.play(0.6f);
+                    break;
+                case 2:
+                    this.hurtSound3.play(0.6f);
+                    break;
+            }
+
             this.invulnerableTimer = INVULNERABLE_TIMER;
         }
     }
@@ -289,7 +316,7 @@ public class Player extends Character {
         TextureRegion costumeOverlay2 = null;
 
         if (Objects.equals("bomb", currentCostume)) {
-            if (shootingStateTimer > 0) {
+            if (this.shootingStateTimer > 0) {
                 if (Objects.equals(costumeOverlay, costumeShootDown)) {
                     costumeOverlay2 = sparksUpDown;
                 } else if (Objects.equals(costumeOverlay, costumeShootLeft)) {
@@ -330,14 +357,14 @@ public class Player extends Character {
 
                 if (Objects.equals(currentCostume, "bomb")) {
 
-                    if (shootingStateTimer > 0) {
+                    if (this.shootingStateTimer > 0) {
                         batch.draw(costumeOverlay, positionX - 36, positionY + bodyToRender.getRegionHeight() - 38, costumeOverlay.getRegionWidth() * 2, costumeOverlay.getRegionHeight() * 2);
                     } else {
                         batch.draw(costumeOverlay, positionX - 36, positionY + bodyToRender.getRegionHeight() - 34, costumeOverlay.getRegionWidth() * 2, costumeOverlay.getRegionHeight() * 2);
                     }
 
                     if (costumeOverlay2 != null) {
-                        if (shootingStateTimer > 0) {
+                        if (this.shootingStateTimer > 0) {
                             batch.draw(costumeOverlay2, positionX - 36, positionY + bodyToRender.getRegionHeight() - 38, costumeOverlay.getRegionWidth() * 2, costumeOverlay.getRegionHeight() * 2);
                         } else {
                             batch.draw(costumeOverlay2, positionX - 36, positionY + bodyToRender.getRegionHeight() - 34, costumeOverlay.getRegionWidth() * 2, costumeOverlay.getRegionHeight() * 2);
@@ -353,7 +380,7 @@ public class Player extends Character {
     }
 
     private TextureRegion costumeOverlayForCurrentState() {
-        if (shootingStateTimer > 0) {
+        if (this.shootingStateTimer > 0) {
             if (currentHead == shootRight) return costumeShootRight;
             if (currentHead == shootLeft) return costumeShootLeft;
             if (currentHead == shootUp) return costumeShootUp;
@@ -388,17 +415,13 @@ public class Player extends Character {
     }
 
     public void increaseTears(float value) {
-        System.out.println("Health increased by: " + value);
-        this.shoot_interval -= value;
+        this.shootInterval -= value;
         this.shootDirectionTimer -= value;
-        this.post_shoot_direction_duration -= value;
-        System.out.println(this.shoot_interval);
+        this.postShootDirectionDuration -= value;
     }
 
     public void increaseDamage(float value) {
-        System.out.println("Damage increased by: " + value);
         this.damage += value;
-        System.out.println(this.damage);
     }
 
     public void setAppearance(Texture appearance, String currentCostume) {
@@ -406,7 +429,6 @@ public class Player extends Character {
         this.costumeTexture = appearance;
         this.currentCostume = currentCostume;
 
-        System.out.println(currentCostume);
 
         // Load head regions
         if (Objects.equals("health", currentCostume)) {

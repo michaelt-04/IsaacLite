@@ -1,17 +1,15 @@
 package github.tankgame.characters.monsters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import github.tankgame.characters.Monster;
 import github.tankgame.projectiles.Projectile;
 import github.tankgame.utils.CollisionDetector;
-
-import java.util.Objects;
 
 // Extends Monster, contains horf behaviors and stats
 public class Horf extends Monster {
@@ -24,6 +22,8 @@ public class Horf extends Monster {
     private TextureRegion currentBody;
     private int width, height;
     private CollisionDetector collisionDetector;
+    private Sound deathSound;
+    int deathSoundCount = 0;
 
     private Array<Projectile> projectiles;
     private float shootCooldown;
@@ -38,6 +38,7 @@ public class Horf extends Monster {
         this.speed = 80*1.5f;
         this.health = 3;
         this.damage = 1;
+        this.deathSound = Gdx.audio.newSound(Gdx.files.internal("sounds/horfdeath.wav"));
 
         headTexture = new Texture(Gdx.files.internal("characters/monsters/horf_head_sheet.png"));
         bodyTexture = new Texture(Gdx.files.internal("characters/monsters/horf_body_sheet.png"));
@@ -181,10 +182,14 @@ public class Horf extends Monster {
     @Override
     public void playDeathAnimation() {
         if (this.deathAnim != null) {
+
+            if(this.deathSoundCount == 0){
+                this.deathSound.play(0.8f);
+                this.deathSoundCount++;
+            }
             this.deathTime += Gdx.graphics.getDeltaTime();
             this.currentBody = deathAnim.getKeyFrame(deathTime, true);
         }
-
     }
 
     @Override

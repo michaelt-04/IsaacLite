@@ -1,9 +1,9 @@
 package github.tankgame.characters.monsters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -12,7 +12,6 @@ import github.tankgame.projectiles.Projectile;
 import github.tankgame.utils.CollisionDetector;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Clotty extends Monster {
@@ -21,6 +20,8 @@ public class Clotty extends Monster {
     private Animation<TextureRegion> bodyAnimation, hopAnimation, attackAnimation;
     private TextureRegion currentBodyFrame;
     private boolean isFacingLeft = false; // Tracks whether Clotty is facing left
+    private Sound deathSound;
+    int deathSoundCount = 0;
 
     private List<BloodTrail> bloodTrails;
     private float trailCooldown;
@@ -39,6 +40,7 @@ public class Clotty extends Monster {
         this.damage = 1f;
         this.bloodTrails = new ArrayList<>();
         this.trailCooldown = 0;
+        this.deathSound = Gdx.audio.newSound(Gdx.files.internal("sounds/meatydeath1.wav"));
 
         bodyTexture = new Texture(Gdx.files.internal("characters/monsters/clotty_sheet.png"));
         bloodTexture = new Texture(Gdx.files.internal("characters/monsters/red_creep.png"));
@@ -248,6 +250,10 @@ public class Clotty extends Monster {
     @Override
     public void playDeathAnimation() {
         if (this.deathAnim != null) {
+            if(this.deathSoundCount == 0){
+                this.deathSound.play(0.8f);
+                this.deathSoundCount++;
+            }
             this.deathTime += Gdx.graphics.getDeltaTime();
             this.currentBodyFrame = deathAnim.getKeyFrame(deathTime, true);
         }

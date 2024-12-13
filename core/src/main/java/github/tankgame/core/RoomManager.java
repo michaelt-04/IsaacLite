@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 
@@ -38,9 +37,6 @@ public class RoomManager {
             if (roomGrid[i]) {
                 String roomPath = firstRoomCreated ? "rooms/room_" + i + ".png" : "rooms/start_room.png";
 
-                // FOR TESTING ROOM LAYOUTS
-                //String roomPath = firstRoomCreated ? "rooms/room_" + i + ".png" : "rooms/room_5.png";
-
                 boolean isItemRoom = itemRooms[i];
                 boolean isBossRoom = bossRooms[i];
                 Room room = new Room(roomPath, roomGrid, i, isItemRoom, isBossRoom);
@@ -52,15 +48,14 @@ public class RoomManager {
                     firstRoomCreated = true;
                     startRoom = room;
                     startRoomIndex = room.getRoomIndex();
-                    System.out.println("startRoomIndex: " + startRoomIndex);
 
-                    if (itemRooms[startRoomIndex]) {
+                    if (itemRooms[startRoomIndex] || bossRooms[startRoomIndex]) {
+                        bossRooms[startRoomIndex] = false;
                         itemRooms[startRoomIndex] = false; // Unmark as item room
                         room.setItemRoom(false); // Update the room to not be an item room
 
                         // Re-add an item room to another valid, non-start room
                         addItemRoom();
-
                     }
                 }
 
@@ -68,8 +63,6 @@ public class RoomManager {
                 if (itemRooms[i]) {
                     setSpecialDoors(room, "item");
 
-                    // DOUBLE CHECK THIS, SOMETIMES IT REMOVES THE WRONG DOOR, IT SHOULD ONLY REMOVE THE ONE THAT DOESNT
-                    // HAVE ANOTHER DOOR
                     while (room.getDoors().size > 1) {
                         room.getDoors().removeIndex(0);
                     }
@@ -83,46 +76,6 @@ public class RoomManager {
                 }
             }
         }
-
-        // Print the room grid for debugging
-        System.out.println("Room grid layout (S = Start room, C = Connected room, I = Item room, B = Boss room, . = Empty space):");
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 5; x++) {
-                int index = y * 5 + x;
-                if (index == startRoomIndex) {
-                    System.out.print("S "); // Mark the starting room
-                } else if (itemRooms[index]) {
-                    System.out.print("I "); // Mark item rooms
-                } else if (bossRooms[index]) {
-                    System.out.print("B "); // Mark boss rooms
-                } else if (roomGrid[index]) {
-                    System.out.print("R "); // Regular room
-                } else {
-                    System.out.print(". "); // Empty space
-                }
-            }
-            System.out.println();
-        }
-
-        /*System.out.println("Rooms and their doors:");
-        for (int i = 0; i < allRooms.size; i++) {
-            Room room = allRooms.get(i);
-            System.out.println("Room " + room.getRoomIndex() + ": " + room.getTexturePath());
-            System.out.println("isItemRoom: " + room.isItemRoom() + " isBossRoom: " + room.isBossRoom());
-
-            System.out.println("Tile width: " + room.getTileWidth() + " Tile height: " + room.getTileHeight());
-
-            Array<Door> doors = room.getDoors();
-            if (doors.isEmpty()) {
-                System.out.println("  No doors.");
-            } else {
-                System.out.println("  Doors:");
-                for (int j = 0; j < doors.size; j++) {
-                    Door door = doors.get(j);
-                    System.out.println("    Door " + j + ": leads to room index " + door.getTargetRoomPath());
-                }
-            }
-        }*/
     }
 
     private void addItemRoom() {
@@ -148,12 +101,10 @@ public class RoomManager {
             int randomIndex = random.nextInt(validItemRoomCells.size());
             int itemRoomCell = validItemRoomCells.remove(randomIndex);
 
-            //System.out.println("Placing item room again...");
             itemRooms[itemRoomCell] = true;
             roomGrid[itemRoomCell] = true;
             itemRoomsPlaced++;
 
-            System.out.println("itemRoom location: " + itemRoomCell);
         }
     }
 

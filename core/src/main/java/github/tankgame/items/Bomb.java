@@ -1,6 +1,7 @@
 package github.tankgame.items;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,6 +28,8 @@ public class Bomb {
     private boolean fadingDarkSpot = false; // Whether the dark spot is fading
     private float damage = 0;
     private Rectangle bounds;
+    private Sound explosionSound;
+    private int soundCount = 0;
 
     public Bomb(float x, float y, float explosionRadius, boolean startExploding) {
         this.x = x;
@@ -44,6 +47,7 @@ public class Bomb {
         this.bombTexture = new Texture(Gdx.files.internal("items/bomb/bomb_sheet.png"));
         this.explosionTexture = new Texture(Gdx.files.internal("items/bomb/explosion_sheet.png"));
         this.darkSpotTexture = new Texture("items/bomb/dark_spot.png");
+        this.explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
 
         this.explodingAnimation = createExplodingAnimation(bombTexture);
         this.explosionAnimation = createExplosionAnimation(explosionTexture);
@@ -148,6 +152,13 @@ public class Bomb {
 
     public void render(SpriteBatch batch) {
         if (hasExploded) {
+
+            if(this.soundCount == 0){
+                this.explosionSound.play(0.6f);
+
+                this.soundCount++;
+            }
+
             if (leavesDarkSpot) {
                 batch.setColor(1, 1, 1, darkSpotAlpha); // Set alpha for the dark spot
                 batch.draw(darkSpotTextureRegion, x - explosionRadius / 2, y - explosionRadius / 2, explosionRadius * 2, explosionRadius * 2);
@@ -161,6 +172,7 @@ public class Bomb {
             }
         } else if (isExploding) {
             // Render exploding animation
+
             TextureRegion currentFrame = explodingAnimation.getKeyFrame(elapsedTime, false);
             batch.draw(currentFrame, x, y, 50, 50);
         }
@@ -170,13 +182,10 @@ public class Bomb {
         for (Rock rock : rocks) {
             if (!rock.isDestroyed()) {
                 Rectangle rockBounds = rock.getBounds();
-                System.out.println(rockBounds);
                 Rectangle explosionBounds = new Rectangle(
                     x - explosionRadius, y - explosionRadius, explosionRadius * 2, explosionRadius * 2);
-                System.out.println(explosionBounds);
 
                 if (explosionBounds.overlaps(rockBounds)) {
-                    System.out.println("OVERLAP");
                     rock.breakRock(); // Destroy the rock if within range
                 }
             }

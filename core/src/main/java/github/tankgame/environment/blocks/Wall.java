@@ -17,7 +17,6 @@ public class Wall {
         this.height = 40;
         this.texture = new Texture("rooms/blocks/wall.png");
 
-        // Initialize the wall's collision bounds
         this.bounds = new Rectangle(x, y, width, height);
     }
 

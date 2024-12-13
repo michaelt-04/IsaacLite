@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import github.tankgame.characters.Character;
 import github.tankgame.characters.Monster;
 import github.tankgame.characters.Player;
+import com.badlogic.gdx.audio.Sound;
 
 // Represents projectiles (tears) with properties like speed, direction, damage
 public class Projectile {
@@ -33,6 +33,8 @@ public class Projectile {
     private int projWidth = 20*2, projHeight = 20*2;
     private float deltaX, deltaY;
 
+    private Sound collisionSound;
+
     public Projectile(float startX, float startY, float dirX, float dirY, float damage, Character character) {
         this.character = character;
         if(character instanceof Player) {
@@ -41,6 +43,7 @@ public class Projectile {
             texture = new Texture(Gdx.files.internal("projectiles/monster_tear_sprite_sheet.png"));
         }
         loadSprites();
+        this.collisionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/tear.wav"));
         this.positionX = startX;
         this.positionY = startY;
         setDirection(dirX, dirY);
@@ -90,6 +93,7 @@ public class Projectile {
     public void onCollision() {
         if (this.state == State.MOVING) {
             this.state = State.COLLIDING;
+            this.collisionSound.play(0.6f);
             this.collisionTimeElapsed = 0;
             if(this.character instanceof Player) {
                 this.damage = 0;
