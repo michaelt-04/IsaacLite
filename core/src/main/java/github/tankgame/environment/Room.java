@@ -1,6 +1,7 @@
 package github.tankgame.environment;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -51,7 +52,7 @@ public class Room {
     private Boss boss;
 
     public Room(String texturePath, boolean[] roomGrid, int roomIndex, boolean isItemRoom, boolean isBossRoom) {
-        roomTexture = new Texture(texturePath);
+        roomTexture = new Texture(Gdx.files.internal(texturePath));
         this.roomGrid = roomGrid;
         this.texturePath = texturePath;
         this.roomIndex = roomIndex;
@@ -223,7 +224,15 @@ public class Room {
     }
 
     public void loadRoomFromCSV(String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        FileHandle fileHandle = Gdx.files.internal(filePath);
+        if (!fileHandle.exists()) {
+            System.err.println("File not found: " + filePath);
+            return;
+        }
+
+        try {
+            BufferedReader br = new BufferedReader(fileHandle.reader());
+
             String line;
             this.rowCount = 0;
             this.columnCount = 0;
@@ -242,10 +251,10 @@ public class Room {
             solidTiles.clear();
 
             // Second pass to populate the solidTiles array and spawn monsters
-            BufferedReader brSecondPass = new BufferedReader(new FileReader(filePath));
+            br = new BufferedReader(fileHandle.reader());
             int row = 0;
 
-            while ((line = brSecondPass.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 for (int col = 0; col < values.length; col++) {
                     int value = Integer.parseInt(values[col].trim());
@@ -281,7 +290,7 @@ public class Room {
                 }
                 row++;
             }
-            brSecondPass.close();
+            br.close();
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
         }

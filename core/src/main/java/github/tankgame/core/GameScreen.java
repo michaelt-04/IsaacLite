@@ -146,6 +146,11 @@ public class GameScreen extends ApplicationAdapter {
                 backgroundMusic.stop();
             }
 
+            if(bossMusic.isPlaying() || bossOutroMusic.isPlaying()) {
+                bossMusic.stop();
+                bossOutroMusic.stop();
+            }
+
             // Handle death intro music and death music
             if (!deathMusic.isPlaying()) {
                 deathMusicIntro.play();

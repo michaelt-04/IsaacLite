@@ -59,6 +59,7 @@ configure(subprojects) {
 subprojects {
   version = '$projectVersion'
   ext.appName = 'TankGame'
+
   repositories {
     mavenCentral()
     maven { url 'https://s01.oss.sonatype.org' }
