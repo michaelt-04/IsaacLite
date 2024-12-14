@@ -49,5 +49,6 @@ The jar folder will store the built jar of your term project.
 |  Up           |    W               |
 |  Down         |    S               |
 |  Shoot        | Up/Down/Left/Right |
+|  Place Bomb   |   Space            |
 
 <!-- You may add more controls if you need to. -->
