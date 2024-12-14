@@ -24,6 +24,7 @@ public abstract class PowerUp {
         return this.bounds;
     }
 
+    // Abstract method to render the power-up
     public abstract void render(SpriteBatch batch);
 
     public abstract void dispose();

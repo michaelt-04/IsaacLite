@@ -15,7 +15,9 @@ import java.util.Objects;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 
-// Extends Character, manages player-specific actions and stats
+/**
+ * Represents the player character. Extends Character and implements player-specific behavior.
+ */
 public class Player extends Character {
     private Texture texture;
     private TextureRegion textureRegion;
@@ -49,6 +51,13 @@ public class Player extends Character {
     private int currentBombs; // Current available bombs
     private float damage;
 
+    /**
+     * Initializes a Player with a starting position and size.
+     *
+     * @param positionX Starting x-coordinate of the character.
+     * @param positionY Starting y-coordinate of the character.
+     *
+     */
     public Player(float positionX, float positionY) {
         super(positionX, positionY, 64, 64);
         this.speed = 135 * 2;
@@ -75,6 +84,9 @@ public class Player extends Character {
         currentBody = bodyDownAnim.getKeyFrame(0);  // Standing down
     }
 
+    /**
+     * Resets the player's stats to their default values.
+     */
     public void setDefaultStats(){
         this.speed = 270;
         this.health = 6;
@@ -84,6 +96,12 @@ public class Player extends Character {
         this.postShootDirectionDuration = 0.4f;
     }
 
+    /**
+     * Updates the player's state, including bombs.
+     *
+     * @param delta Time elapsed since last frame.
+     * @param rocks Array of rocks to check for interactions with bombs.
+     */
     public void update(float delta, Array<Rock> rocks) {
         // Update bombs
         for (int i = bombs.size - 1; i >= 0; i--) {
@@ -97,6 +115,9 @@ public class Player extends Character {
 
     }
 
+    /**
+     * Loads all the player's sprite regions and animations.
+     */
     private void loadSprites() {
         int headWidth = 32;
         int headHeight = 32;
@@ -128,6 +149,19 @@ public class Player extends Character {
         dead = new TextureRegion(texture, 132, 288, 38, 38);
     }
 
+    /**
+     * Creates an animation from a sprite sheet.
+     *
+     * @param texture       The sprite sheet texture.
+     * @param startX        Starting x-coordinate of the first frame.
+     * @param startY        Starting y-coordinate of the first frame.
+     * @param frameWidth    Width of a single frame.
+     * @param frameHeight   Height of a single frame.
+     * @param frameCount    Total number of frames.
+     * @param frameDuration Duration of each frame in seconds.
+     * @param frameJump     Horizontal spacing between frames in the sheet.
+     * @return The animation object.
+     */
     private Animation<TextureRegion> createAnimation(Texture texture, int startX, int startY, int frameWidth, int frameHeight, int frameCount, float frameDuration, int frameJump) {
         Array<TextureRegion> frames = new Array<>();
 
@@ -143,6 +177,11 @@ public class Player extends Character {
         return new Animation<>(frameDuration, frames, Animation.PlayMode.LOOP);
     }
 
+    /**
+     * Places a bomb at the player's current position if available.
+     *
+     * @param rocks Array of rocks to check for interactions with the bomb.
+     */
     public void placeBomb(Array<Rock> rocks) {
         if (currentBombs > 0) {
             Bomb newBomb = new Bomb(this.positionX, this.positionY, 64, true); // Example radius 64
@@ -151,6 +190,15 @@ public class Player extends Character {
         }
     }
 
+    /**
+     * Updates the player's movement and animations based on input.
+     *
+     * @param delta  Time elapsed since last frame.
+     * @param newX   Target x-coordinate for movement.
+     * @param newY   Target y-coordinate for movement.
+     * @param deltaX Change in x-direction.
+     * @param deltaY Change in y-direction.
+     */
     @Override
     public void move(float delta, float newX, float newY, float deltaX, float deltaY) {
         super.move(delta, newX, newY, deltaX, deltaY);
@@ -182,6 +230,12 @@ public class Player extends Character {
         }
     }
 
+    /**
+     * Shoots a projectile in the specified direction if the cooldown allows.
+     *
+     * @param deltaX Change in x-direction.
+     * @param deltaY Change in y-direction.
+     */
     @Override
     public void shoot(float deltaX, float deltaY) {
         if (this.shootCooldown <= 0 && (deltaX != 0 || deltaY != 0)) {
@@ -280,6 +334,9 @@ public class Player extends Character {
         }
     }
 
+    /**
+     * Plays the death animation of the player and updates the current head texture accordingly.
+     */
     @Override
     public void playDeathAnimation() {
         if (deathAnim != null) {
@@ -295,10 +352,21 @@ public class Player extends Character {
         }
     }
 
+    /**
+     * Returns the list of projectiles fired by the player.
+     *
+     * @return An array of projectiles.
+     */
     public Array<Projectile> getProjectiles() {
         return this.projectiles;
     }
 
+    /**
+     * Renders the player character and its accessories, such as bombs, projectiles, or costume overlays.
+     *
+     * @param batch The SpriteBatch used for drawing.
+     * @param scale The scaling factor for rendering the player.
+     */
     @Override
     public void render(SpriteBatch batch, float scale) {
         float playerScaledX = this.getPositionX() * scale;
@@ -379,6 +447,11 @@ public class Player extends Character {
         }
     }
 
+    /**
+     * Determines the appropriate costume overlay based on the current state and animation.
+     *
+     * @return The appropriate costume overlay texture region.
+     */
     private TextureRegion costumeOverlayForCurrentState() {
         if (this.shootingStateTimer > 0) {
             if (currentHead == shootRight) return costumeShootRight;
@@ -394,26 +467,57 @@ public class Player extends Character {
         return null;
     }
 
+    /**
+     * Returns the list of bombs available for the player.
+     *
+     * @return An array of bombs.
+     */
     public Array<Bomb> getBombs() {
         return this.bombs;
     }
 
+    /**
+     * Returns the current number of bombs the player has.
+     *
+     * @return The current number of bombs.
+     */
     public int getCurrentBombs() {
         return this.currentBombs;
     }
 
+    /**
+     * Sets whether the player has the triple shot ability.
+     *
+     * @param hasTripleShot True if the player has triple shot ability, false otherwise.
+     */
     public void setHasTripleShot(boolean hasTripleShot) {
         this.hasTripleShot = hasTripleShot;
     }
 
+    /**
+     * Increases the number of bombs the player has by a specified value.
+     *
+     * @param value The amount to increase the number of bombs by.
+     */
     public void increaseBombs(float value) {
         this.currentBombs = (int) value;
     }
 
+
+    /**
+     * Returns the maximum health of the player.
+     *
+     * @return The maximum health value.
+     */
     public float getMaxHealth() {
         return this.maxHealth;
     }
 
+    /**
+     * Reduces the shooting interval and direction timers based on the specified value.
+     *
+     * @param value The value by which to reduce the shoot timers.
+     */
     public void increaseTears(float value) {
         this.shootInterval -= value;
         this.shootDirectionTimer -= value;
@@ -424,6 +528,13 @@ public class Player extends Character {
         this.damage += value;
     }
 
+
+    /**
+     * Sets the appearance of the player, including the costume texture and specific costume parts.
+     *
+     * @param appearance The texture to be used for the costume.
+     * @param currentCostume The name of the current costume (e.g., "health", "bomb", "triple").
+     */
     public void setAppearance(Texture appearance, String currentCostume) {
         this.hasCostume = true;
         this.costumeTexture = appearance;

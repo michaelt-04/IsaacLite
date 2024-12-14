@@ -34,11 +34,17 @@ public class Chub extends Boss {
     private float randomMovementTimer; // Timer for random movement
     private float randomMoveX, randomMoveY; // Movement in random direction
 
+    /**
+     * Initializes Chub with position and default properties.
+     *
+     * @param positionX The x-coordinate of Chub's position.
+     * @param positionY The y-coordinate of Chub's position.
+     */
     public Chub(float positionX, float positionY) {
         super(positionX, positionY, 160, 160);
         this.width = 160;
         this.height = 160;
-        this.damage = 2f; // Damage for contact attack (full heart)
+        this.damage = 2f; // Damage for contact (full heart)
         this.chargeCooldown = CHARGE_INTERVAL;
         this.chargeDuration = 1.0f; // Duration of the charge
         this.chargeTimeElapsed = 0.0f; // Initialize charge time elapsed
@@ -49,6 +55,9 @@ public class Chub extends Boss {
         loadSprites();
     }
 
+    /**
+     * Loads sprite textures and regions for Chub's animations and appearance.
+     */
     private void loadSprites() {
         int frameWidth = 64;
         int frameHeight = 64;
@@ -63,6 +72,13 @@ public class Chub extends Boss {
         currentHead = idleHeadRegion;
     }
 
+    /**
+     * Handles Chub's movement, including charging and random wandering.
+     *
+     * @param playerX   The x-coordinate of the player's position.
+     * @param playerY   The y-coordinate of the player's position.
+     * @param deltaTime The time elapsed since the last frame, used for smooth movement.
+     */
     @Override
     public void move(float playerX, float playerY, float deltaTime) {
         if (this.isDead) return;
@@ -85,6 +101,13 @@ public class Chub extends Boss {
         }
     }
 
+    /**
+     * Determines if Chub should start charging based on the player's position.
+     *
+     * @param playerX   The x-coordinate of the player's position.
+     * @param playerY   The y-coordinate of the player's position.
+     * @param deltaTime The time elapsed since the last frame.
+     */
     private void checkForCharge(float playerX, float playerY, float deltaTime) {
         if (Math.abs(playerX - this.positionX) > Math.abs(playerY - this.positionY)) {
             if (playerX > this.positionX) {
@@ -117,6 +140,12 @@ public class Chub extends Boss {
         }
     }
 
+    /**
+     * Initiates Chub's charging behavior in a given direction.
+     *
+     * @param dirX Direction of charge along the x-axis (-1, 0, or 1).
+     * @param dirY Direction of charge along the y-axis (-1, 0, or 1).
+     */
     private void startCharging(int dirX, int dirY) {
         isCharging = true;
         chargeTimeElapsed = 0.0f;
@@ -131,6 +160,11 @@ public class Chub extends Boss {
         isMovingHorizontal = (dirY == 0); // Horizontal move if Y direction is zero
     }
 
+    /**
+     * Handles Chub's movement during a charge attack.
+     *
+     * @param deltaTime The time elapsed since the last frame.
+     */
     private void moveCharging(float deltaTime) {
         if (isCharging) {
             // Increment charge time elapsed
@@ -144,42 +178,45 @@ public class Chub extends Boss {
             }
 
             if (isMovingHorizontal) {
-                // Horizontal movement (left or right)
-                this.positionX += chargeX * deltaTime; // Apply movement in the X direction
+                // Horizontal movement
+                this.positionX += chargeX * deltaTime;
 
-                // Clamp position within screen bounds for X axis (screenWidth is your screen width)
                 if (this.positionX < 80) {
-                    this.positionX = 80; // Prevent going off the left side of the screen
+                    this.positionX = 80; // Prevent going off the left side
                     isCharging = false;  // Stop charging
                 } else if (this.positionX > room.getRoomWidth() - this.width - 80) {
                     this.positionX = room.getRoomWidth() - this.width - 80; // Prevent going off the right side
                     isCharging = false;  // Stop charging
                 }
             } else {
-                // Vertical movement (up or down)
-                this.positionY += chargeY * deltaTime; // Apply movement in the Y direction
+                // Vertical movement
+                this.positionY += chargeY * deltaTime;
 
-                // Clamp position within screen bounds for Y axis (screenHeight is your screen height)
                 if (this.positionY < 80) {
-                    this.positionY = 80; // Prevent going off the bottom of the screen
+                    this.positionY = 80; // Prevent going off the bottom
                     isCharging = false;  // Stop charging
                 } else if (this.positionY > room.getRoomHeight() - this.height - 80) {
-                    this.positionY = room.getRoomHeight() - this.height - 80; // Prevent going off the top of the screen
+                    this.positionY = room.getRoomHeight() - this.height - 80; // Prevent going off the top
                     isCharging = false;  // Stop charging
                 }
             }
 
-            // Check if the charge has gone beyond its intended range
+            // Check if the charge has gone beyond its range
             if (Math.abs(this.positionX - chargeStartX) > CHARGE_RANGE ||
                 Math.abs(this.positionY - chargeStartY) > CHARGE_RANGE) {
                 isCharging = false;  // Stop charging if the range is exceeded
                 chargeTimeElapsed = 0f; // Reset charge time when the charge ends
             }
 
-            updateBounds(); // Update bounding box after movement
+            updateBounds(); // Update bound box after movement
         }
     }
 
+    /**
+     * Handles Chub's random wandering behavior when not charging.
+     *
+     * @param deltaTime The time elapsed since the last frame.
+     */
     private void randomMovement(float deltaTime) {
         randomMovementTimer -= deltaTime;
 
@@ -231,22 +268,27 @@ public class Chub extends Boss {
         this.positionX += randomMoveX * deltaTime;
         this.positionY += randomMoveY * deltaTime;
 
-        // Clamp position within screen bounds for X and Y axes
         if (this.positionX < 80) {
-            this.positionX = 80; // Prevent going off the left side of the screen
+            this.positionX = 80; // Prevent going off the left side
         } else if (this.positionX > room.getRoomWidth() - this.width - 80) {
             this.positionX = room.getRoomWidth() - this.width - 80; // Prevent going off the right side
         }
 
         if (this.positionY < 80) {
-            this.positionY = 80; // Prevent going off the bottom of the screen
+            this.positionY = 80; // Prevent going off the bottom
         } else if (this.positionY > room.getRoomHeight() - this.height - 80) {
-            this.positionY = room.getRoomHeight() - this.height - 80; // Prevent going off the top of the screen
+            this.positionY = room.getRoomHeight() - this.height - 80; // Prevent going off the top
         }
 
         updateBounds(); // Update the bounds after movement
     }
 
+    /**
+     * Draws Chub on the screen.
+     *
+     * @param batch The SpriteBatch used for rendering.
+     * @param scale The scale factor for rendering the boss.
+     */
     @Override
     public void render(SpriteBatch batch, float scale) {
         float scaledWidth = this.width * scale;
@@ -264,7 +306,7 @@ public class Chub extends Boss {
                 if (isFacingUp) {
                     currentHead = attackHeadRegions[2]; // Up
                 } else if (isFacingLeft) {
-                    currentHead = attackHeadRegions[1]; // Flip of right (left)
+                    currentHead = attackHeadRegions[1]; // Flip of right
                 } else if (isFacingRight) {
                     currentHead = attackHeadRegions[1]; // Right
                 } else if (isFacingDown) {
@@ -353,6 +395,9 @@ public class Chub extends Boss {
         }
     }
 
+    /**
+     * Disposes of Chub's resources.
+     */
     @Override
     public void dispose() {
         chubTexture.dispose();

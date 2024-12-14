@@ -20,6 +20,10 @@ public class HudManager {
     private static final int HUD_MARGIN = 80; // Distance from the screen edges
     private static final int BOMB_ICON_SIZE = 36; // Bomb icon size
 
+    /**
+     * Constructor for initializing the HUD manager. This method loads all textures for the HUD elements
+     * (hearts, bombs, and font numbers) and prepares them for rendering.
+     */
     public HudManager() {
         heartTexture = new Texture(Gdx.files.internal("hud/ui_hearts.png"));
         pickupsTexture = new Texture(Gdx.files.internal("hud/hudpickups.png"));
@@ -42,6 +46,12 @@ public class HudManager {
         nineTexture = new TextureRegion(fontTexture, 151, 34, 8, 12);
     }
 
+    /**
+     * Renders the HUD elements to the screen, including the player's health (hearts) and the bomb count.
+     *
+     * @param batch The batch used to render the HUD elements.
+     * @param player The player object to access current health and bomb count.
+     */
     public void render(Batch batch, Player player) {
         this.player = player; // Store reference for access
 
@@ -52,6 +62,12 @@ public class HudManager {
         renderBombs(batch);
     }
 
+    /**
+     * Renders the hearts representing the player's health.
+     * This method calculates how many hearts to display, and which type (full, half, empty) to show based on the player's health.
+     *
+     * @param batch The batch used to draw the heart textures.
+     */
     private void renderHearts(Batch batch) {
         float playerHealth = player.getHealth();
         int maxHealth = (int) player.getMaxHealth();
@@ -78,6 +94,11 @@ public class HudManager {
         }
     }
 
+    /**
+     * Renders the bomb icon and the current bomb count next to it. The bomb count is shown as two digits.
+     *
+     * @param batch The batch used to draw the bomb icon and the number.
+     */
     private void renderBombs(Batch batch) {
         int bombCount = player.getCurrentBombs();
 
@@ -107,6 +128,13 @@ public class HudManager {
         batch.draw(unitsTexture, numberX + 14, numberY, 16, 24);
     }
 
+    /**
+     * Returns the texture for a digit based on the given number (0-9).
+     * This method is used to get the correct texture for displaying digits in the bomb count.
+     *
+     * @param digit The digit to retrieve the texture for (0-9).
+     * @return The corresponding texture for the given digit.
+     */
     private TextureRegion getDigitTexture(int digit) {
         switch (digit) {
             case 0: return zeroTexture;
@@ -123,6 +151,10 @@ public class HudManager {
         }
     }
 
+    /**
+     * Disposes of all textures used in the HUD to free up resources.
+     * This method is called when the HUD is no longer needed, such as when the game is closed.
+     */
     public void dispose() {
         heartTexture.dispose();
         pickupsTexture.dispose();

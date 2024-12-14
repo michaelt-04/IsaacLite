@@ -11,7 +11,7 @@ import github.tankgame.characters.Monster;
 import github.tankgame.characters.boss.Boss;
 import github.tankgame.characters.boss.Chub;
 import github.tankgame.characters.monsters.Clotty;
-import github.tankgame.characters.monsters.Horf; // Example monster type
+import github.tankgame.characters.monsters.Horf;
 import github.tankgame.environment.blocks.Rock;
 import github.tankgame.environment.blocks.Wall;
 import github.tankgame.items.Item;

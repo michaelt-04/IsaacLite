@@ -13,6 +13,7 @@ import com.badlogic.gdx.audio.Sound;
 
 // Represents projectiles (tears) with properties like speed, direction, damage
 public class Projectile {
+    // Enum representing the state of the projectile (MOVING or COLLIDING)
     private enum State {
         MOVING, COLLIDING
     }
@@ -35,6 +36,7 @@ public class Projectile {
 
     private Sound collisionSound;
 
+    // Constructor to initialize a projectile
     public Projectile(float startX, float startY, float dirX, float dirY, float damage, Character character) {
         this.character = character;
         if(character instanceof Player) {
@@ -57,6 +59,7 @@ public class Projectile {
         collisionAnimation = createAnimation(texture, 0, 0, 68, 68, 4, 0.05f);
     }
 
+    // Creates an animation from a texture
     private Animation<TextureRegion> createAnimation(Texture texture, int startX, int startY, int frameWidth, int frameHeight, int frameCount, float frameDuration) {
         Array<TextureRegion> frames = new Array<>();
 
@@ -70,12 +73,14 @@ public class Projectile {
         return new Animation<>(frameDuration, frames, Animation.PlayMode.NORMAL);
     }
 
+    // Sets the direction vector for the projectile and normalizes it
     public void setDirection(float deltaX, float deltaY) {
         float magnitude = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         this.directionX = deltaX / magnitude;
         this.directionY = deltaY / magnitude;
     }
 
+    // Updates the projectile's position and state
     public void update(float delta) {
         if (this.state == State.MOVING) {
             this.positionX += directionX * speed * delta;
@@ -90,6 +95,7 @@ public class Projectile {
         }
     }
 
+    // Triggers the collision state and plays the collision sound
     public void onCollision() {
         if (this.state == State.MOVING) {
             this.state = State.COLLIDING;
@@ -129,6 +135,7 @@ public class Projectile {
         return this.deltaY;
     }
 
+    // Draws the projectile or its collision animation
     public void draw(Batch batch) {
         if (this.state == State.MOVING) {
             batch.draw(projectile, this.positionX, this.positionY, 68*1.5f, 68*1.5f);

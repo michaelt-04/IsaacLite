@@ -44,7 +44,9 @@ public class GameScreen extends ApplicationAdapter {
     // Add monsters to the game
     private Array<Monster> monsters;
 
-
+    /**
+     * Initializes the game screen, loads resources, and sets up initial game state, including music, player, and rooms.
+     */
     @Override
     public void create() {
 
@@ -90,7 +92,10 @@ public class GameScreen extends ApplicationAdapter {
         deathMusic.setVolume(0.2f);
     }
 
-    // Manual reset method (instead of calling create)
+    /**
+     * Restarts the game, reinitializing game entities and resetting game states.
+     * This is used to reset the game after the player dies or finishes the game.
+     */
     public void restartGame() {
         // Reinitialize player and other entities
         player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -123,6 +128,10 @@ public class GameScreen extends ApplicationAdapter {
         pauseScreen.togglePause(); // This will set isPauseActive to false, hiding the pause screen
     }
 
+    /**
+     * The main render method that is called every frame. It handles different game states (start screen, pause, death, gameplay, etc.)
+     * and renders the appropriate game elements to the screen.
+     */
     @Override
     public void render() {
 
@@ -265,6 +274,9 @@ public class GameScreen extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Disposes of all game resources to prevent memory leaks. This method is called when the game is closed or changed.
+     */
     @Override
     public void dispose() {
         startScreen.dispose();

@@ -9,6 +9,7 @@ import github.tankgame.characters.Character;
 
 import java.util.Objects;
 
+// The Pill class represents a power-up item that modifies a specific stat of a character when collected
 public class Pill extends PowerUp {
     private String stat; // The stat to modify
     private float value; // The amount to modify the stat by
@@ -16,6 +17,7 @@ public class Pill extends PowerUp {
     private TextureRegion textureRegion;
     private Sound pillSound;
 
+    // Constructor to initialize the pill with its position, stat, and value.
     public Pill(float x, float y, String stat, float value) {
         super(x, y);
 
@@ -38,6 +40,7 @@ public class Pill extends PowerUp {
         return this.stat;
     }
 
+    // Plays the sound effect associated with the pill.
     public void playPillSound(){
         this.pillSound.play();
     }
@@ -52,6 +55,7 @@ public class Pill extends PowerUp {
         texture.dispose();
     }
 
+    // Applies the effect of the pill on the given character
     @Override
     public void applyEffect(Character character) {
         switch (stat.toLowerCase()) {

@@ -20,6 +20,12 @@ public class GameManager {
     private Room currentRoom;
     private InputHandler inputHandler;
 
+    /**
+     * Initializes the GameManager, sets up the starting room, and initializes other game components like collision detection.
+     *
+     * @param player The player character.
+     * @param roomManager The room manager responsible for managing rooms.
+     */
     public GameManager(Player player, RoomManager roomManager) {
         this.player = player;
         this.roomManager = roomManager;
@@ -36,6 +42,11 @@ public class GameManager {
         this.collisionDetector = new CollisionDetector(startRoom);
     }
 
+    /**
+     * Updates the game state each frame, including player actions, monster movements, projectile handling, and room interactions.
+     *
+     * @param delta The time delta between frames (for frame-rate independence).
+     */
     public void updateGame(float delta) {
 
         if (player.isDead()) {
@@ -153,6 +164,11 @@ public class GameManager {
 
     }
 
+    /**
+     * Handles room transitions when the player collides with a door.
+     *
+     * @return The new room the player transitions to.
+     */
     public Room handleRoomTransition() {
         for (Door door : currentRoom.getDoors()) {
             if (door.isPlayerColliding(player)) {
@@ -163,6 +179,15 @@ public class GameManager {
         return currentRoom;
     }
 
+    /**
+     * Transitions to a new room based on the player's interaction with a door, updating the player's position accordingly.
+     *
+     * @param roomPath The path to the target room's texture.
+     * @param enteringDoorOrientation The orientation of the door the player is entering.
+     * @param prevPath The texture path of the previous room.
+     * @param door The door the player is interacting with.
+     * @return The new room the player has transitioned to.
+     */
     private Room transitionToRoom(String roomPath, String enteringDoorOrientation, String prevPath, Door door) {
 
 

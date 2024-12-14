@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class MapGenerator {
 
-    // Constants for grid size and start room index
     private static final int WIDTH = 5;
     private static final int HEIGHT = 4;
     private static final int START_ROOM = 10;

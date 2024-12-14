@@ -8,6 +8,11 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Objects;
 
+/**
+ * The Door class represents a door in the game that connects rooms. It has properties for
+ * its position, orientation, and state (locked or unlocked). The door can be rendered with
+ * different textures depending on whether it's a regular door, an item door, or a boss door.
+ */
 public class Door {
     private float x, y;
     private int width = 27, height = 27;
@@ -24,6 +29,13 @@ public class Door {
 
     private Rectangle bounds;
 
+    /**
+     * Constructor to create a door for a given room and orientation, leading to a target room.
+     *
+     * @param room The room the door is in.
+     * @param orientation The orientation of the door (top, bottom, left, right).
+     * @param targetRoomPath The path to the room that this door leads to.
+     */
     public Door(Room room, String orientation, String targetRoomPath) {
         this.orientation = orientation;
         this.targetRoomPath = targetRoomPath;
@@ -58,6 +70,12 @@ public class Door {
         }
     }
 
+    /**
+     * Returns the opposite orientation for a given door orientation.
+     *
+     * @param orientation The current orientation (top, bottom, left, right).
+     * @return The opposite orientation (bottom, top, right, left).
+     */
     public String oppositeOrientation(String orientation) {
         switch (orientation) {
             case "top":
@@ -73,6 +91,9 @@ public class Door {
         }
     }
 
+    /**
+     * Loads the textures for the door based on its special type (e.g., boss or item).
+     */
     private void loadSprites() {
 
 
@@ -94,6 +115,11 @@ public class Door {
         this.rightDoor = new TextureRegion(rightDoorTexture);
     }
 
+    /**
+     * Renders the door with the appropriate textures and state (open, locked, etc.).
+     *
+     * @param batch The SpriteBatch used for rendering the door.
+     */
     public void render(SpriteBatch batch) {
         loadSprites();
 
@@ -188,6 +214,11 @@ public class Door {
         );
     }
 
+    /**
+     * Returns the rotation angle for the door based on its orientation.
+     *
+     * @return The rotation angle for the door (0, 180, 90, or 270 degrees).
+     */
     private float getRotationAngle() {
         switch (orientation) {
             case "top":
@@ -203,10 +234,16 @@ public class Door {
         }
     }
 
+    /**
+     * Sets the special type for the door (e.g., "item", "boss").
+     *
+     * @param specialType The special type of the door.
+     */
     public void setSpecialType(String specialType) {
         this.specialType = specialType;
     }
 
+    // Getter and setter methods for door properties
     public float getX() {
         return this.x;
     }
@@ -239,6 +276,12 @@ public class Door {
         this.locked = locked;
     }
 
+    /**
+     * Checks if the player is colliding with the door.
+     *
+     * @param player The player character to check for collision.
+     * @return True if the player is colliding with the door and the door is not locked.
+     */
     public boolean isPlayerColliding(Character player) {
         if (locked) {
             return false; // Ignore collisions if the door is locked
@@ -251,6 +294,9 @@ public class Door {
         return targetRoomPath;
     }
 
+    /**
+     * Disposes of the door's textures to free up resources when no longer needed.
+     */
     public void dispose() {
         texture.dispose();
     }

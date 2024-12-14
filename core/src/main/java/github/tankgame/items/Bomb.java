@@ -11,17 +11,17 @@ import com.badlogic.gdx.utils.Array;
 import github.tankgame.environment.blocks.Rock;
 
 public class Bomb {
-    private float x, y; // Position of the bomb
+    private float x, y;
     private Texture idleTexture, bombTexture, explosionTexture;
     private TextureRegion idleTextureRegion, darkSpotTextureRegion;
     private Animation<TextureRegion> explodingAnimation; // Animation for when the bomb is about to explode
     private Animation<TextureRegion> explosionAnimation; // Animation for the explosion
-    private float explosionRadius; // Radius of the explosion
-    private float explosionTime; // Timer for explosion
-    private float elapsedTime; // Time tracker for animations
+    private float explosionRadius;
+    private float explosionTime;
+    private float elapsedTime;
     private boolean isExploding; // Whether the bomb is in the "exploding" phase
     private boolean hasExploded; // Whether the bomb has exploded
-    private Texture darkSpotTexture; // Texture for the dark spot
+    private Texture darkSpotTexture;
     private boolean leavesDarkSpot; // Whether the bomb leaves a dark spot after exploding
     private float darkSpotFadeDuration = 1.0f; // Duration for the dark spot to fade out
     private float darkSpotAlpha = 1.0f; // Alpha value for the dark spot
@@ -31,13 +31,14 @@ public class Bomb {
     private Sound explosionSound;
     private int soundCount = 0;
 
+    // Constructor to initialize the bomb with given position, explosion radius, and starting state
     public Bomb(float x, float y, float explosionRadius, boolean startExploding) {
         this.x = x;
         this.y = y;
         this.explosionRadius = explosionRadius;
-        this.explosionTime = 2.0f; // Time before the bomb explodes (in seconds)
+        this.explosionTime = 2.0f; // Time before the bomb explodes
         this.elapsedTime = 0.0f;
-        this.isExploding = startExploding; // Start in exploding phase if specified
+        this.isExploding = startExploding; // Start in exploding phase
         this.hasExploded = false;
         this.leavesDarkSpot = false;
 
@@ -54,6 +55,7 @@ public class Bomb {
         this.darkSpotTextureRegion = new TextureRegion(darkSpotTexture, 0, 0, 96, 50);
     }
 
+    // Creates the animation for the bomb exploding (before the actual explosion)
     private Animation<TextureRegion> createExplodingAnimation(Texture texture) {
         Array<TextureRegion> frames = new Array<>();
 
@@ -87,6 +89,7 @@ public class Bomb {
         return new Animation<>(0.09f, frames, Animation.PlayMode.LOOP);
     }
 
+    // Creates the animation for the actual explosion
     private Animation<TextureRegion> createExplosionAnimation(Texture texture) {
         Array<TextureRegion> frames = new Array<>();
 
@@ -118,6 +121,7 @@ public class Bomb {
         return new Animation<>(0.09f, frames, Animation.PlayMode.LOOP);
     }
 
+    // Updates the bomb state (exploding or fading) based on elapsed time
     public void update(float delta, Array<Rock> rocks) {
         elapsedTime += delta;
 
@@ -150,6 +154,7 @@ public class Bomb {
         }
     }
 
+    // Renders the bomb's current state (exploding, explosion, or dark spot)
     public void render(SpriteBatch batch) {
         if (hasExploded) {
 
@@ -178,6 +183,7 @@ public class Bomb {
         }
     }
 
+    // Damages rocks that are within the explosion radius
     private void damageRocks(Array<Rock> rocks) {
         for (Rock rock : rocks) {
             if (!rock.isDestroyed()) {
@@ -192,6 +198,7 @@ public class Bomb {
         }
     }
 
+    // Checks if the explosion animation has finished
     public boolean isExplosionAnimationFinished() {
         return explosionAnimation.isAnimationFinished(elapsedTime - explosionTime);
     }
@@ -200,14 +207,17 @@ public class Bomb {
         return this.hasExploded;
     }
 
+    // Checks if the bomb has exploded and if it no longer leaves a dark spot
     public boolean hasExploded() {
         return this.hasExploded && !leavesDarkSpot;
     }
 
+    // Getter for the damage dealt by the bomb
     public float getDamage() {
         return this.damage;
     }
 
+    // Getter for the bounds of the bomb
     public Rectangle getBounds() {
         return this.bounds;
     }
